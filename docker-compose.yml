@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  backend:
+    build: 
+      context: .
+      dockerfile: backend.Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - EMAIL_PASSWORD=${EMAIL_PASSWORD}
+      - CAMERA_INDEX=0
+    volumes:
+      - ./backend:/app/backend
+      - ./models:/app/models
+      - ./screenshots:/app/screenshots
+      - db-data:/app/data
+    devices:
+      - "/dev/video0:/dev/video0" # Required for webcam access in Linux
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: frontend.Dockerfile
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend/src:/app/src
+      - ./frontend/public:/app/public
+
+volumes:
+  db-data:
